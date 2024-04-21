@@ -65,46 +65,6 @@ impl Runtime {
     pub fn available_operations(&self) -> usize {
         self.generators.len()
     }
-
-    // pub(crate) fn run<F>(&mut self, f: Arc<F>)
-    // where
-    //     F: Fn() + Sync + Send + 'static,
-    // {
-    //     let body = || -> State {
-    //         f();
-    //         Finish
-    //     };
-    //     let mut v = vec![];
-    //     let mut g = Gn::<()>::new(body);
-    //     v.push(g);
-    //
-    //     loop {
-    //         let mut idx = 0;
-    //         let mut finished = true;
-    //         let len = v.len();
-    //         while idx < len {
-    //             let state = v[idx].resume();
-    //             if state.is_none() {
-    //                 idx += 1;
-    //                 continue;
-    //             }
-    //             finished = false;
-    //             let state = state.unwrap();
-    //             match state {
-    //                 Spawn(location, f) => {
-    //                     let g = Gn::<()>::new(f);
-    //                     v.push(g);
-    //                 },
-    //                 ContextSwitch(location) => {},
-    //                 Finish => {},
-    //             }
-    //             idx += 1;
-    //         }
-    //         if finished {
-    //             break;
-    //         }
-    //     }
-    // }
 }
 
 pub(crate) enum RuntimeError {
