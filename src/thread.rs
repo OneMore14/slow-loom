@@ -2,14 +2,11 @@ use crate::rt::runtime::schedule;
 use crate::rt::state::State::{Blocking, Finish, Spawn};
 use std::sync::{Arc, Mutex};
 
-pub struct Thread {}
-
 pub struct JoinHandle<T> {
     data: Arc<Mutex<Option<T>>>,
 }
 
 impl<T> JoinHandle<T> {
-    #[track_caller]
     pub fn join(self) -> std::thread::Result<T> {
         loop {
             let mut data_guard = self.data.lock().unwrap();
@@ -24,7 +21,6 @@ impl<T> JoinHandle<T> {
     }
 }
 
-#[track_caller]
 pub fn spawn<F, T>(f: F) -> JoinHandle<T>
 where
     F: FnOnce() -> T,

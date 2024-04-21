@@ -3,10 +3,11 @@ use std::sync::atomic::Ordering::{AcqRel, Acquire, Relaxed, Release};
 use std::sync::Arc;
 
 use slow_loom::sync::atomic::AtomicUsize;
+use slow_loom::sync::mutex::Mutex;
 use slow_loom::thread;
 
 #[test]
-#[should_panic]
+#[should_panic(expected = "not equal")]
 fn check_fail() {
     struct BuggyInc {
         num: AtomicUsize,
@@ -40,7 +41,7 @@ fn check_fail() {
         for th in ths {
             th.join().unwrap();
         }
-        assert_eq!(2, buggy_inc.num.load(Relaxed));
+        assert_eq!(2, buggy_inc.num.load(Relaxed), "not equal");
     });
 }
 

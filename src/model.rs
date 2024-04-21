@@ -45,6 +45,10 @@ impl<F: Fn() + Sync + Send + 'static> Context<F> {
         self.operations.push(pos);
         self.rt.tick_at(pos)
     }
+
+    fn is_finished(&self) -> bool {
+        self.rt.is_finished()
+    }
 }
 
 impl<F: Fn() + Sync + Send + 'static> Clone for Context<F> {
@@ -64,7 +68,11 @@ where
     contexts.push_back(init_context);
 
     while let Some(ctx) = contexts.pop_front() {
-        for new_ctx in ctx.tick_all() {
+        let new_ctxs = ctx.tick_all();
+        if !ctx.is_finished() && new_ctxs.is_empty() {
+            panic!("deadlock detected");
+        }
+        for new_ctx in new_ctxs {
             contexts.push_back(new_ctx);
         }
     }
